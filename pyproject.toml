@@ -1,0 +1,17 @@
+[project]
+name = "logtabs"
+version = "0.1.0"
+description = "Follow a project's log files in a tabbed terminal UI, with filtering, health dots and restart keys"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = ["textual>=8.2.8,<9"]
+
+[project.scripts]
+logtabs = "logtabs.cli:main"
+
+[dependency-groups]
+dev = ["pytest>=8"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
