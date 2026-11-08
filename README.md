@@ -11,10 +11,10 @@ service to `/tmp/<name>.log`, `tmux pipe-pane`, `docker logs -f x > x.log`, and 
 ## Install
 
 ```bash
-uv tool install git+<this repo's URL>     # or, from a clone: uv tool install --editable .
+uv tool install git+https://github.com/idlecat/logtabs   # or, from a clone: uv tool install --editable .
 ```
 
-Or run it without installing: `uvx --from <path or git URL> logtabs`.
+Or run it without installing: `uvx --from git+https://github.com/idlecat/logtabs logtabs`.
 
 ## Use
 
