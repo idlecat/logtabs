@@ -13,6 +13,8 @@ def test_full_config(tmp_path):
     config = load(write(tmp_path, '''
 title = "demo"
 hide_debug = true
+overview = false
+split = "grid"
 drop = ['^\\s*$']
 
 [patterns]
@@ -37,6 +39,7 @@ description = "start all"
 run = "make up"
 '''))
     assert config.title == "demo" and config.hide_debug
+    assert not config.overview and not config.has_overview and config.split == "grid"
     assert config.cwd == tmp_path.resolve()
     api, app = config.tabs
     assert api.sources[0].name == "api"
@@ -51,6 +54,7 @@ run = "make up"
 
 
 @pytest.mark.parametrize("text, message", [
+    ('split = "diagonal"\n[[tabs]]\nname = "a"\npath = "a.log"', "split must be one of"),
     ("", "no [[tabs]]"),
     ('[[tabs]]\npath = "a.log"', "needs a name"),
     ('[[tabs]]\nname = "a"', "needs a path or sources"),

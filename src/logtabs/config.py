@@ -16,7 +16,10 @@ DEFAULT_WARN = r"\b(WARN|WARNING)\b|\b[Ww]arning:"
 DEFAULT_DEBUG = r"\b(DEBUG|TRACE)\b"
 
 # Keys the viewer itself uses; actions can't take them. Digits switch tabs.
-RESERVED_KEYS = {"q", "slash", "/", "escape", "d", "w", "c", "r", "end", "ctrl+p"} | {str(i) for i in range(10)}
+RESERVED_KEYS = {"q", "slash", "/", "escape", "d", "w", "c", "r", "s", "end", "enter", "tab", "shift+tab",
+                 "ctrl+p"} | {str(i) for i in range(10)}
+
+SPLITS = ("auto", "rows", "columns", "grid")
 
 PALETTE = ["green", "cyan", "magenta", "blue", "yellow", "bright_green", "bright_cyan", "bright_magenta"]
 
@@ -53,6 +56,8 @@ class Config:
     tabs: list[Tab] = field(default_factory=list)
     actions: list[Action] = field(default_factory=list)
     hide_debug: bool = False
+    overview: bool = True  # an "all" tab with every tab's log side by side (only with 2+ tabs)
+    split: str = "auto"  # the overview's layout: one of SPLITS
     drop: list[re.Pattern] = field(default_factory=list)
     error: re.Pattern = field(default_factory=lambda: re.compile(DEFAULT_ERROR))
     warn: re.Pattern = field(default_factory=lambda: re.compile(DEFAULT_WARN))
@@ -61,6 +66,10 @@ class Config:
 
     def sources(self) -> list[Source]:
         return [s for tab in self.tabs for s in tab.sources]
+
+    @property
+    def has_overview(self) -> bool:
+        return self.overview and len(self.tabs) > 1
 
 
 def find_config(start: Path) -> Path | None:
@@ -99,7 +108,10 @@ def load(path: Path) -> Config:
     except tomllib.TOMLDecodeError as e:
         raise ConfigError(f"{path}: {e}") from e
     base = path.resolve().parent
-    config = Config(title=data.get("title", base.name), hide_debug=bool(data.get("hide_debug", False)), cwd=base)
+    config = Config(title=data.get("title", base.name), hide_debug=bool(data.get("hide_debug", False)),
+                    overview=bool(data.get("overview", True)), split=data.get("split", "auto"), cwd=base)
+    if config.split not in SPLITS:
+        raise ConfigError(f"split must be one of {', '.join(SPLITS)}")
 
     patterns = data.get("patterns", {})
     for name in ("error", "warn", "debug"):

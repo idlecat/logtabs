@@ -1,7 +1,8 @@
 # logtabs
 
 Follow a project's log files in a tabbed terminal UI. Each tab follows one or more files, which
-are interleaved and labeled when there are several. You get a regex filter across all tabs, a
+are interleaved and labeled when there are several, and an "all" tab shows every tab's log at
+once, split into panes. You get a regex filter across all tabs, a
 DEBUG toggle, up/down markers for services with a port, and keys that run your project's own
 restart and start commands.
 
@@ -28,7 +29,11 @@ logtabs --check                          # validate the config and print what it
 
 | Key | |
 | --- | --- |
+| `0` | the "all" tab: every tab's log in its own pane (there with two or more tabs) |
 | `1`–`9` | switch tabs (or click) |
+| `Tab`, click | in "all", pick the pane that `r`, `c` and scrolling act on (it gets a highlighted border) |
+| `Enter` | in "all", open the picked pane's own tab |
+| `s` | in "all", cycle the split: auto, rows, columns, grid |
 | `/` | filter every tab by a case-insensitive regex, with matches highlighted; `Esc` clears it |
 | `d` | show or hide DEBUG/TRACE lines |
 | `w` | wrap long lines or not |
@@ -38,7 +43,7 @@ logtabs --check                          # validate the config and print what it
 | your `[[actions]]` keys | run that command |
 | `q` | quit |
 
-A file that is truncated or replaced counts as started over. A tab with one file then shows
+Runs of blank lines show as one. A file that is truncated or replaced counts as started over. A tab with one file then shows
 only the new content; a tab with several marks the point with a `──── name started over ────`
 line. Color escapes are stripped. Each tab keeps its last 20,000 lines in memory, and the first
 read of an existing file starts from its last 1 MB.
@@ -51,6 +56,9 @@ are expanded in paths.
 ```toml
 title = "myproject logs"   # default: the directory's name
 hide_debug = true          # start with DEBUG lines hidden (d toggles)
+overview = true            # the "all" tab, which it opens on (default true; needs two or more tabs)
+split = "auto"             # its layout: auto (rows for up to 3 tabs, else a 2-column grid),
+                           # rows, columns or grid
 drop = ['^\s*$']           # regexes for lines never to show at all
 
 [patterns]                 # override how lines are colored (Python regexes)
