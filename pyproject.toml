@@ -3,6 +3,8 @@ name = "logtabs"
 version = "0.1.0"
 description = "Follow a project's log files in a tabbed terminal UI, with filtering, health dots and restart keys"
 readme = "README.md"
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.11"
 dependencies = ["textual>=8.2.8,<9"]
 

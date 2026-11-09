@@ -95,3 +95,7 @@ background; a toast shows when they finish or the last line of output if they fa
 uv run pytest
 uv run logtabs tests/…     # or any log files
 ```
+
+## License
+
+MIT — see [LICENSE](LICENSE).
